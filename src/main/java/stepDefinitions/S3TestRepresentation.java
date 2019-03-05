@@ -2,23 +2,24 @@ package stepDefinitions;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class S3TestRepresentation {
 
-    String clientRegion = "*** Client region ***";
-    String bucketName = "*** Bucket name ***";
-    String stringObjKeyName = "*** String object key name ***";
-    String fileObjKeyName = "*** File object key name ***";
+    String clientRegion;
+    String bucketName;
+    String fileObjKeyName;
     AmazonS3 s3Client;
 
     public void uploadObject(File file) {
@@ -44,22 +45,26 @@ public class S3TestRepresentation {
     }
 
     public void prepareS3(String propName) {
-        s3Client = AmazonS3ClientBuilder.standard()
-                .withRegion(clientRegion)
-                .withCredentials(new ProfileCredentialsProvider())
-                .build();
 
         Properties prop = new Properties();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = loader.getResourceAsStream("/" + propName + ".properties");
+        FileInputStream stream = null;
+        try {
+            stream = new FileInputStream(propName + ".properties");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         try {
             prop.load(stream);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String clientRegion = prop.getProperty("client.region");
-        String bucketName = prop.getProperty("bucket.name");
-        String stringObjKeyName = prop.getProperty("object.keyName");
-        String fileObjKeyName = prop.getProperty("file.keyName");
+        clientRegion = prop.getProperty("client.region");
+        bucketName = prop.getProperty("bucket.name");
+        fileObjKeyName = prop.getProperty("file.keyName");
+
+        s3Client = AmazonS3ClientBuilder.standard()
+                .withRegion(clientRegion)
+                .withCredentials(new EnvironmentVariableCredentialsProvider())
+                .build();
     }
 }
