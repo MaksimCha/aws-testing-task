@@ -12,9 +12,7 @@ public class FileProvider {
 
     public static Stream<File> generateFile() {
         int length = 10;
-        boolean useLetters = true;
-        boolean useNumbers = false;
-        String fileName = RandomStringUtils.random(length, useLetters, useNumbers);
+        String fileName = RandomStringUtils.random(length, true, false);
         byte[] fileByteArray = new byte[50]; // length is bounded by 50
         new Random().nextBytes(fileByteArray);
         File file = new File("src/main/resources/" + fileName + ".txt");
