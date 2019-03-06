@@ -9,6 +9,14 @@ import java.io.File;
 
 public class UploadFileTestCase extends TestBase {
 
+    private S3TestRepresentation s3rep;
+
+    @BeforeEach
+    public void prepareTest() {
+        s3rep = new S3TestRepresentation();
+        s3rep.prepareS3();
+    }
+
     @ParameterizedTest
     @MethodSource(value = "common.FileProvider#generateFile")
     public void AWSUploadFileTest(File file) {
