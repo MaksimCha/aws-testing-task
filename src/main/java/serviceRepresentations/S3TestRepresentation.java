@@ -21,7 +21,7 @@ public class S3TestRepresentation {
     private TransferManager tx;
     private AmazonS3 s3Client;
 
-    public void prepareS3() {
+    public void prepare() {
         s3Client = AmazonS3ClientBuilder.standard().withRegion(clientRegion).build();
         tx = TransferManagerBuilder.standard().withS3Client(s3Client).build();
     }
@@ -39,9 +39,9 @@ public class S3TestRepresentation {
 
     public void deleteFile(File file) {
         s3Client.deleteObject(bucketName, file.getName());
-        try{
+        try {
             s3Client.getObject(bucketName, file.getName());
-        } catch (AmazonServiceException e){
+        } catch (AmazonServiceException e) {
             assertTrue(true);
             System.out.println("Delete done");
         }

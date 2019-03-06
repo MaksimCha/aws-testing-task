@@ -16,7 +16,7 @@ public class UploadFileTestCase extends TestBase {
     @BeforeEach
     public void prepareTest() {
         s3rep = new S3TestRepresentation();
-        s3rep.prepareS3();
+        s3rep.prepare();
     }
 
     @ParameterizedTest
