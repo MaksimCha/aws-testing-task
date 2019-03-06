@@ -7,43 +7,54 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
-import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class S3TestRepresentation {
 
     private String bucketName = System.getProperty("bucket.name");
     private String clientRegion = System.getProperty("client.region");
+    private String ownerId = System.getProperty("owner.id");
     private TransferManager tx;
-    private AmazonS3 s3;
+    private AmazonS3 s3Client;
 
     public void prepareS3() {
-        s3 = AmazonS3ClientBuilder.standard().withRegion(clientRegion).build();
-        tx = TransferManagerBuilder.standard().withS3Client(s3).build();
+        s3Client = AmazonS3ClientBuilder.standard().withRegion(clientRegion).build();
+        tx = TransferManagerBuilder.standard().withS3Client(s3Client).build();
     }
 
     public void uploadFile(File file) {
         try {
             Upload myUpload = tx.upload(bucketName, file.getName(), file);
             myUpload.waitForCompletion();
-            Assertions.assertTrue(myUpload.isDone());
+            assertTrue(myUpload.isDone());
+            System.out.println("Upload done");
         } catch (InterruptedException | SdkClientException e) {
             e.printStackTrace();
         }
     }
 
     public void deleteFile(File file) {
-        s3.deleteObject(bucketName, file.getName());
+        s3Client.deleteObject(bucketName, file.getName());
         try{
-            s3.getObject(bucketName, file.getName());
+            s3Client.getObject(bucketName, file.getName());
         } catch (AmazonServiceException e){
-            Assertions.assertTrue(true);
+            assertTrue(true);
+            System.out.println("Delete done");
         }
     }
 
     public void cleanUp() {
         tx.shutdownNow();
-        s3.shutdown();
+        s3Client.shutdown();
+    }
+
+    public void checkParameters() {
+        assertEquals(s3Client.getBucketLocation(bucketName), clientRegion);
+        assertEquals(s3Client.getRegionName(), clientRegion);
+        assertEquals(s3Client.getS3AccountOwner().getId(), ownerId);
     }
 }

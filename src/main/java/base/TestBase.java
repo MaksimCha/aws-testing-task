@@ -21,5 +21,6 @@ public class TestBase {
         setProperty("bucket.name", prop.getProperty("bucket.name"));
         setProperty("client.region", prop.getProperty("client.region"));
         setProperty("lambda.name", prop.getProperty("lambda.name"));
+        setProperty("owner.id", prop.getProperty("owner.id"));
     }
 }
