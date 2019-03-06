@@ -1,9 +1,11 @@
 package awsTests;
 
+
 import base.TestBase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import stepDefinitions.S3TestRepresentation;
+import serviceRepresentations.S3TestRepresentation;
 
 import java.io.File;
 
@@ -18,30 +20,34 @@ public class UploadFileTestCase extends TestBase {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "common.FileProvider#generateFile")
+    @MethodSource(value = "sourceMethods.FileProvider#generateFile")
     public void AWSUploadFileTest(File file) {
-        System.out.println(file);
+        System.out.println("Filepath: " + file);
+
         //1. Upload file to s3
-        S3TestRepresentation s3rep = new S3TestRepresentation();
-        s3rep.prepareS3("aws");
-        s3rep.uploadObject(file);
+        s3rep.uploadFile(file);
+
         //2. Check lambda
 
         //3. Clean up
-        System.out.println(file.delete());
+        System.out.println("File was locally deleted: " + file.delete());
     }
 
     @ParameterizedTest
-    @MethodSource(value = "common.FileProvider#generateFile")
+    @MethodSource(value = "sourceMethods.FileProvider#generateFile")
     public void AWSUploadAndDeleteTest(File file) {
-        System.out.println(file);
+        System.out.println("Filepath: " + file);
+
         //1. Upload file to s3
+        s3rep.uploadFile(file);
 
         //2. Delete file from s3
+        s3rep.deleteFile(file);
 
         //2. Check lambda
 
         //3. Clean up
-        System.out.println(file.delete());
+        s3rep.cleanUp();
+        System.out.println("File was locally deleted: " + file.delete());
     }
 }

@@ -1,4 +1,4 @@
-package common;
+package sourceMethods;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
