@@ -23,5 +23,8 @@ public class TestBase {
         setProperty("lambda.name", prop.getProperty("lambda.name"));
         setProperty("owner.id", prop.getProperty("owner.id"));
         setProperty("table.name", prop.getProperty("table.name"));
+        setProperty("lambda.arn", prop.getProperty("lambda.arn"));
+        setProperty("role", prop.getProperty("role"));
+        setProperty("lambda.version", prop.getProperty("lambda.version"));
     }
 }
