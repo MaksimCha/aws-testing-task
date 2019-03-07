@@ -10,9 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 
-import static enums.LogEvents.DELETE;
-import static enums.LogEvents.UPLOAD;
-
 public class UploadFileTestCase extends TestBase {
 
     private S3Model s3s3Model;
@@ -34,7 +31,7 @@ public class UploadFileTestCase extends TestBase {
         s3s3Model.uploadFile(file);
 
         //2. Check lambda
-        awsLogsModel.checkLambdaLog(UPLOAD);
+        awsLogsModel.checkLambdaLog(file);
 
         //3. Clean up
         s3s3Model.cleanUp();
@@ -53,7 +50,7 @@ public class UploadFileTestCase extends TestBase {
         s3s3Model.deleteFile(file);
 
         //2. Check lambda
-        awsLogsModel.checkLambdaLog(DELETE);
+        awsLogsModel.checkLambdaLog(file);
 
         //3. Clean up
         s3s3Model.cleanUp();
