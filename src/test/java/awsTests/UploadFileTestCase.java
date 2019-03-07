@@ -2,21 +2,27 @@ package awsTests;
 
 
 import base.TestBase;
+import models.AWSLogsModel;
+import models.S3Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import models.S3Model;
 
 import java.io.File;
 
+import static enums.LogEvents.DELETE;
+import static enums.LogEvents.UPLOAD;
+
 public class UploadFileTestCase extends TestBase {
 
-    private S3Model s3rep;
+    private S3Model s3s3Model;
+    private AWSLogsModel awsLogsModel;
 
     @BeforeEach
     public void prepareTest() {
-        s3rep = new S3Model();
-        s3rep.prepare();
+        s3s3Model = new S3Model();
+        s3s3Model.prepare();
+        awsLogsModel = new AWSLogsModel();
     }
 
     @ParameterizedTest
@@ -25,12 +31,13 @@ public class UploadFileTestCase extends TestBase {
         System.out.println("Filepath: " + file);
 
         //1. Upload file to s3
-        s3rep.uploadFile(file);
+        s3s3Model.uploadFile(file);
 
         //2. Check lambda
+        awsLogsModel.checkLambdaLog(UPLOAD);
 
         //3. Clean up
-        s3rep.cleanUp();
+        s3s3Model.cleanUp();
         System.out.println("File was locally deleted: " + file.delete());
     }
 
@@ -40,15 +47,16 @@ public class UploadFileTestCase extends TestBase {
         System.out.println("Filepath: " + file);
 
         //1. Upload file to s3
-        s3rep.uploadFile(file);
+        s3s3Model.uploadFile(file);
 
         //2. Delete file from s3
-        s3rep.deleteFile(file);
+        s3s3Model.deleteFile(file);
 
         //2. Check lambda
+        awsLogsModel.checkLambdaLog(DELETE);
 
         //3. Clean up
-        s3rep.cleanUp();
+        s3s3Model.cleanUp();
         System.out.println("File was locally deleted: " + file.delete());
     }
 }
