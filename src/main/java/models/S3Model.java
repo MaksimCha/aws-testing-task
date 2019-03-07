@@ -1,4 +1,4 @@
-package serviceRepresentations;
+package models;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -13,7 +13,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class S3TestRepresentation {
+public class S3Model {
 
     private String bucketName = System.getProperty("bucket.name");
     private String clientRegion = System.getProperty("client.region");

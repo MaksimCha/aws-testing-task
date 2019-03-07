@@ -5,17 +5,17 @@ import base.TestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import serviceRepresentations.S3TestRepresentation;
+import models.S3Model;
 
 import java.io.File;
 
 public class UploadFileTestCase extends TestBase {
 
-    private S3TestRepresentation s3rep;
+    private S3Model s3rep;
 
     @BeforeEach
     public void prepareTest() {
-        s3rep = new S3TestRepresentation();
+        s3rep = new S3Model();
         s3rep.prepare();
     }
 
@@ -30,6 +30,7 @@ public class UploadFileTestCase extends TestBase {
         //2. Check lambda
 
         //3. Clean up
+        s3rep.cleanUp();
         System.out.println("File was locally deleted: " + file.delete());
     }
 
