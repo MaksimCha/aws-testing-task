@@ -22,7 +22,7 @@ public class AWSLogsModel {
         awsLogsClient = AWSLogsClientBuilder.standard().withRegion(clientRegion).build();
         request = new FilterLogEventsRequest().withLogGroupName("/aws/lambda/FunctionHandler").withFilterPattern("LAMBDA " + file.getName());
         await()
-                .atMost(10, TimeUnit.SECONDS)
+                .atMost(30, TimeUnit.SECONDS)
                 .pollInterval(200, TimeUnit.MILLISECONDS)
                 .until(() -> checkArray(request));
         result.getEvents().forEach(System.out::println);
