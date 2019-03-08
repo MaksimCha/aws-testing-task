@@ -12,13 +12,13 @@ import java.io.File;
 
 public class UploadFileTestCase extends TestBase {
 
-    private S3Model s3s3Model;
+    private S3Model s3Model;
     private AWSLogsModel awsLogsModel;
 
     @BeforeEach
     public void prepareTest() {
-        s3s3Model = new S3Model();
-        s3s3Model.prepare();
+        s3Model = new S3Model();
+        s3Model.prepare();
         awsLogsModel = new AWSLogsModel();
     }
 
@@ -28,13 +28,13 @@ public class UploadFileTestCase extends TestBase {
         System.out.println("Filepath: " + file);
 
         //1. Upload file to s3
-        s3s3Model.uploadFile(file);
+        s3Model.uploadFile(file);
 
         //2. Check lambda
         awsLogsModel.checkLambdaLog(file);
 
         //3. Clean up
-        s3s3Model.cleanUp();
+        s3Model.cleanUp();
         System.out.println("File was locally deleted: " + file.delete());
     }
 
@@ -44,16 +44,16 @@ public class UploadFileTestCase extends TestBase {
         System.out.println("Filepath: " + file);
 
         //1. Upload file to s3
-        s3s3Model.uploadFile(file);
+        s3Model.uploadFile(file);
 
         //2. Delete file from s3
-        s3s3Model.deleteFile(file);
+        s3Model.deleteFile(file);
 
         //2. Check lambda
         awsLogsModel.checkLambdaLog(file);
 
         //3. Clean up
-        s3s3Model.cleanUp();
+        s3Model.cleanUp();
         System.out.println("File was locally deleted: " + file.delete());
     }
 }
