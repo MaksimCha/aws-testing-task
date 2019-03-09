@@ -29,7 +29,7 @@ public class AWSLogsModel {
 
     private boolean checkArray(FilterLogEventsRequest request) {
         result = awsLogsClient.filterLogEvents(request);
-        return result.getEvents().isEmpty();
+        return !result.getEvents().isEmpty();
     }
 
     public void cleanUp() {
