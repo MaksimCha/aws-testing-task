@@ -47,9 +47,10 @@ public class S3Model {
         }
     }
 
-    public void cleanUp() {
+    public void cleanUp(File file) {
         tx.shutdownNow();
         s3Client.shutdown();
+        System.out.println("File was locally deleted: " + file.delete());
     }
 
     public void checkParameters() {

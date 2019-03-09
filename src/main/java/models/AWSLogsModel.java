@@ -8,24 +8,22 @@ import com.amazonaws.services.logs.model.FilterLogEventsResult;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.awaitility.Awaitility.*;
 
 public class AWSLogsModel {
 
     private String clientRegion = System.getProperty("client.region");
     private AWSLogs awsLogsClient;
-    FilterLogEventsRequest request;
-    FilterLogEventsResult result;
+    private FilterLogEventsResult result;
 
     public void checkLambdaLog(File file) {
         awsLogsClient = AWSLogsClientBuilder.standard().withRegion(clientRegion).build();
-        request = new FilterLogEventsRequest().withLogGroupName("/aws/lambda/FunctionHandler").withFilterPattern("LAMBDA " + file.getName());
+        FilterLogEventsRequest request = new FilterLogEventsRequest().withLogGroupName("/aws/lambda/FunctionHandler").withFilterPattern("LAMBDA " + file.getName());
         await()
                 .atMost(30, TimeUnit.SECONDS)
                 .pollInterval(200, TimeUnit.MILLISECONDS)
                 .until(() -> checkArray(request));
-        result.getEvents().forEach(System.out::println);
         assertTrue(result.getEvents().get(0).getMessage().contains("LAMBDA FileName:" + file.getName()));
     }
 
@@ -33,4 +31,9 @@ public class AWSLogsModel {
         result = awsLogsClient.filterLogEvents(request);
         return result.getEvents().isEmpty();
     }
+
+    public void cleanUp() {
+        awsLogsClient.shutdown();
+    }
+
 }

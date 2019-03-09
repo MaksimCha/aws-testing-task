@@ -25,7 +25,6 @@ public class UploadFileTestCase extends TestBase {
     @ParameterizedTest
     @MethodSource(value = "sourceMethods.FileProvider#generateFile")
     public void AWSUploadFileTest(File file) {
-        System.out.println("Filepath: " + file);
 
         //1. Upload file to s3
         s3Model.uploadFile(file);
@@ -34,14 +33,13 @@ public class UploadFileTestCase extends TestBase {
         awsLogsModel.checkLambdaLog(file);
 
         //3. Clean up
-        s3Model.cleanUp();
-        System.out.println("File was locally deleted: " + file.delete());
+        s3Model.cleanUp(file);
+        awsLogsModel.cleanUp();
     }
 
     @ParameterizedTest
     @MethodSource(value = "sourceMethods.FileProvider#generateFile")
     public void AWSUploadAndDeleteTest(File file) {
-        System.out.println("Filepath: " + file);
 
         //1. Upload file to s3
         s3Model.uploadFile(file);
@@ -53,7 +51,7 @@ public class UploadFileTestCase extends TestBase {
         awsLogsModel.checkLambdaLog(file);
 
         //3. Clean up
-        s3Model.cleanUp();
-        System.out.println("File was locally deleted: " + file.delete());
+        s3Model.cleanUp(file);
+        awsLogsModel.cleanUp();
     }
 }
