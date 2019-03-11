@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import static java.lang.System.setProperty;
+import static java.lang.System.setProperties;
 
 public class TestBase {
 
@@ -18,13 +18,6 @@ public class TestBase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setProperty("bucket.name", prop.getProperty("bucket.name"));
-        setProperty("client.region", prop.getProperty("client.region"));
-        setProperty("lambda.name", prop.getProperty("lambda.name"));
-        setProperty("owner.id", prop.getProperty("owner.id"));
-        setProperty("table.name", prop.getProperty("table.name"));
-        setProperty("lambda.arn", prop.getProperty("lambda.arn"));
-        setProperty("role", prop.getProperty("role"));
-        setProperty("lambda.version", prop.getProperty("lambda.version"));
+        setProperties(prop);
     }
 }

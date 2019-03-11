@@ -1,11 +1,11 @@
 package awsTests;
 
 import base.TestBase;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import models.DynamoModel;
 import models.LambdaModel;
 import models.S3Model;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnvironmentTestCase extends TestBase {
 
@@ -14,7 +14,7 @@ public class EnvironmentTestCase extends TestBase {
     private DynamoModel dynamoModel;
 
     @BeforeEach
-    public void prepareTest() {
+    public void prepare() {
         s3Model = new S3Model();
         lambdaModel = new LambdaModel();
         dynamoModel = new DynamoModel();

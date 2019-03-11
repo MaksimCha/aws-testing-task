@@ -16,7 +16,7 @@ public class UploadFileTestCase extends TestBase {
     private AWSLogsModel awsLogsModel;
 
     @BeforeEach
-    public void prepareTest() {
+    public void prepare() {
         s3Model = new S3Model();
         awsLogsModel = new AWSLogsModel();
     }
