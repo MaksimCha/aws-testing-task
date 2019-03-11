@@ -22,13 +22,11 @@ public class FileProvider {
         log.info("Filename: " + fileName);
         try {
             log.info("Creating new file is done: " + file.createNewFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try (FileOutputStream fos = new FileOutputStream(file)){
+            FileOutputStream fos = new FileOutputStream(file);
             fos.write(fileByteArray);
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
         return Stream.of(file);
     }

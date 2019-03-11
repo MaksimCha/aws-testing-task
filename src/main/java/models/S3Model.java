@@ -28,6 +28,7 @@ public class S3Model {
             log.info("Upload done");
         } catch (InterruptedException | SdkClientException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
 
