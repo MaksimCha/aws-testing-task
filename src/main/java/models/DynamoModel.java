@@ -22,19 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DynamoModel {
 
-    private String clientRegion = System.getProperty("client.region");
-    private String tableName = System.getProperty("table.name");
     private AmazonDynamoDB dynamoDBClient;
-    private DynamoDB dynamoDB;
     private Table viewTable;
     private static final Logger log = LogManager.getLogger(DynamoModel.class);
 
-    public void prepare() {
-        dynamoDBClient = AmazonDynamoDBClientBuilder.standard().withRegion(clientRegion).build();
+    public DynamoModel() {
+        dynamoDBClient = AmazonDynamoDBClientBuilder.standard().withRegion(System.getProperty("client.region")).build();
     }
 
     public void checkParameters() {
-        assertEquals(dynamoDBClient.listTables().getTableNames().get(0), tableName);
+        assertEquals(dynamoDBClient.listTables().getTableNames().get(0), System.getProperty("table.name"));
         checkTableStructure();
         checkTableStatus();
         checkCRUD();
@@ -42,7 +39,11 @@ public class DynamoModel {
     }
 
     private void checkTableStructure() {
-        Iterator<AttributeDefinition> iter = dynamoDBClient.describeTable(tableName).getTable().getAttributeDefinitions().iterator();
+        Iterator<AttributeDefinition> iter = dynamoDBClient
+                .describeTable(System.getProperty("table.name"))
+                .getTable()
+                .getAttributeDefinitions()
+                .iterator();
         for (String atr : getAttributes()) {
             assertEquals(iter.next().getAttributeName(), atr);
         }
@@ -50,7 +51,11 @@ public class DynamoModel {
     }
 
     private void checkTableStatus(){
-        assertEquals(dynamoDBClient.describeTable(tableName).getTable().getTableStatus(), ACTIVE.getStatus());
+        assertEquals(dynamoDBClient
+                .describeTable(System.getProperty("table.name"))
+                .getTable()
+                .getTableStatus(), ACTIVE.getStatus());
+        log.info("Check table status done");
     }
 
     private void checkCRUD() {

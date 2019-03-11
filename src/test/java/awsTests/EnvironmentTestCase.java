@@ -16,11 +16,8 @@ public class EnvironmentTestCase extends TestBase {
     @BeforeEach
     public void prepareTest() {
         s3Model = new S3Model();
-        s3Model.prepare();
         lambdaModel = new LambdaModel();
-        lambdaModel.prepare();
         dynamoModel = new DynamoModel();
-        dynamoModel.prepare();
     }
 
     @Test

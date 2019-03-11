@@ -18,12 +18,11 @@ public class UploadFileTestCase extends TestBase {
     @BeforeEach
     public void prepareTest() {
         s3Model = new S3Model();
-        s3Model.prepare();
         awsLogsModel = new AWSLogsModel();
     }
 
     @ParameterizedTest
-    @MethodSource(value = "sourceMethods.FileProvider#generateFile")
+    @MethodSource(value = "dataProviders.FileProvider#generateFile")
     public void AWSUploadFileTest(File file) {
 
         //1. Upload file to s3
@@ -38,7 +37,7 @@ public class UploadFileTestCase extends TestBase {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "sourceMethods.FileProvider#generateFile")
+    @MethodSource(value = "dataProviders.FileProvider#generateFile")
     public void AWSUploadAndDeleteTest(File file) {
 
         //1. Upload file to s3

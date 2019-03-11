@@ -17,21 +17,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class S3Model {
 
-    private String bucketName = System.getProperty("bucket.name");
-    private String clientRegion = System.getProperty("client.region");
-    private String ownerId = System.getProperty("owner.id");
     private TransferManager tx;
     private AmazonS3 s3Client;
     private static final Logger log = LogManager.getLogger(S3Model.class);
 
-    public void prepare() {
-        s3Client = AmazonS3ClientBuilder.standard().withRegion(clientRegion).build();
+    public S3Model() {
+        s3Client = AmazonS3ClientBuilder.standard().withRegion(System.getProperty("client.region")).build();
         tx = TransferManagerBuilder.standard().withS3Client(s3Client).build();
     }
 
     public void uploadFile(File file) {
         try {
-            Upload myUpload = tx.upload(bucketName, file.getName(), file);
+            Upload myUpload = tx.upload(System.getProperty("bucket.name"), file.getName(), file);
             myUpload.waitForCompletion();
             assertTrue(myUpload.isDone());
             log.info("Upload done");
@@ -41,9 +38,9 @@ public class S3Model {
     }
 
     public void deleteFile(File file) {
-        s3Client.deleteObject(bucketName, file.getName());
+        s3Client.deleteObject(System.getProperty("bucket.name"), file.getName());
         try {
-            s3Client.getObject(bucketName, file.getName());
+            s3Client.getObject(System.getProperty("bucket.name"), file.getName());
         } catch (AmazonServiceException e) {
             assertTrue(true);
             log.info("Delete done");

@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AWSLogsModel {
 
-    private String clientRegion = System.getProperty("client.region");
     private AWSLogs awsLogsClient;
     private FilterLogEventsResult result;
     private static final Logger log = LogManager.getLogger(AWSLogsModel.class);

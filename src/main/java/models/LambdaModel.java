@@ -11,11 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LambdaModel {
 
-    private String clientRegion = System.getProperty("client.region");
-    private String lambdaName = System.getProperty("lambda.name");
-    private String lambdaArn = System.getProperty("lambda.arn");
-    private String role = System.getProperty("role");
-    private String lambdaVersion = System.getProperty("lambda.version");
     private AWSLambda lambdaClient;
     private static final Logger log = LogManager.getLogger(LambdaModel.class);
 
