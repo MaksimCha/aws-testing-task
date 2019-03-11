@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
@@ -20,6 +22,7 @@ public class S3Model {
     private String ownerId = System.getProperty("owner.id");
     private TransferManager tx;
     private AmazonS3 s3Client;
+    private static final Logger log = LogManager.getLogger(S3Model.class);
 
     public void prepare() {
         s3Client = AmazonS3ClientBuilder.standard().withRegion(clientRegion).build();
@@ -31,7 +34,7 @@ public class S3Model {
             Upload myUpload = tx.upload(bucketName, file.getName(), file);
             myUpload.waitForCompletion();
             assertTrue(myUpload.isDone());
-            System.out.println("Upload done");
+            log.info("Upload done");
         } catch (InterruptedException | SdkClientException e) {
             e.printStackTrace();
         }
@@ -43,19 +46,20 @@ public class S3Model {
             s3Client.getObject(bucketName, file.getName());
         } catch (AmazonServiceException e) {
             assertTrue(true);
-            System.out.println("Delete done");
+            log.info("Delete done");
         }
     }
 
     public void cleanUp(File file) {
         tx.shutdownNow();
         s3Client.shutdown();
-        System.out.println("File was locally deleted: " + file.delete());
+        log.info("File was locally deleted: " + file.delete());
     }
 
     public void checkParameters() {
-        assertEquals(s3Client.getBucketLocation(bucketName), clientRegion);
-        assertEquals(s3Client.getRegionName(), clientRegion);
-        assertEquals(s3Client.getS3AccountOwner().getId(), ownerId);
+        assertEquals(s3Client.getBucketLocation(System.getProperty("bucket.name")), System.getProperty("client.region"));
+        assertEquals(s3Client.getRegionName(), System.getProperty("client.region"));
+        assertEquals(s3Client.getS3AccountOwner().getId(), System.getProperty("owner.id"));
+        log.info("Check S3 client parameters done");
     }
 }

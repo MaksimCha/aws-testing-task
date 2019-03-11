@@ -3,6 +3,8 @@ package models;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.lambda.model.FunctionConfiguration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,16 +17,18 @@ public class LambdaModel {
     private String role = System.getProperty("role");
     private String lambdaVersion = System.getProperty("lambda.version");
     private AWSLambda lambdaClient;
+    private static final Logger log = LogManager.getLogger(LambdaModel.class);
 
-    public void prepare() {
-        lambdaClient = AWSLambdaClientBuilder.standard().withRegion(clientRegion).build();
+    public LambdaModel() {
+        lambdaClient = AWSLambdaClientBuilder.standard().withRegion(System.getProperty("client.region")).build();
     }
 
     public void checkParameters() {
         FunctionConfiguration fConf = lambdaClient.listFunctions().getFunctions().get(0);
-        assertEquals(fConf.getFunctionName(), lambdaName);
-        assertEquals(fConf.getFunctionArn(), lambdaArn);
-        assertTrue(fConf.getRole().contains(role));
-        assertTrue(fConf.getVersion().contains(lambdaVersion));
+        assertEquals(fConf.getFunctionName(), System.getProperty("lambda.name"));
+        assertEquals(fConf.getFunctionArn(), System.getProperty("lambda.arn"));
+        assertTrue(fConf.getRole().contains(System.getProperty("role")));
+        assertTrue(fConf.getVersion().contains(System.getProperty("lambda.version")));
+        log.info("Check Lambda client parameters done");
     }
 }

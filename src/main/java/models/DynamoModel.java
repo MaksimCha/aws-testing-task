@@ -8,6 +8,8 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
 import com.amazonaws.services.dynamodbv2.xspec.UpdateItemExpressionSpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -25,6 +27,7 @@ public class DynamoModel {
     private AmazonDynamoDB dynamoDBClient;
     private DynamoDB dynamoDB;
     private Table viewTable;
+    private static final Logger log = LogManager.getLogger(DynamoModel.class);
 
     public void prepare() {
         dynamoDBClient = AmazonDynamoDBClientBuilder.standard().withRegion(clientRegion).build();
@@ -35,6 +38,7 @@ public class DynamoModel {
         checkTableStructure();
         checkTableStatus();
         checkCRUD();
+        log.info("Check Dynamo client parameters done");
     }
 
     private void checkTableStructure() {
@@ -42,6 +46,7 @@ public class DynamoModel {
         for (String atr : getAttributes()) {
             assertEquals(iter.next().getAttributeName(), atr);
         }
+        log.info("Check table structure done");
     }
 
     private void checkTableStatus(){
@@ -49,18 +54,19 @@ public class DynamoModel {
     }
 
     private void checkCRUD() {
-        dynamoDB = new DynamoDB(dynamoDBClient);
-        viewTable = dynamoDB.getTable(tableName);
-        ItemModel itemModel = new ItemModel("2", 3, "123", "123");
-        SETDynamoDBItem(itemModel);
-        itemModel.setFilePath("124");
-        UPDATEDynamoDBItem(itemModel);
-        Map<String, Object> map = GETDynamoDBItem(itemModel).asMap();
-        assertEquals(itemModel.getPackageId(), map.get(PACKAGE_ID.getAttribute()));
-        assertEquals(BigDecimal.valueOf(itemModel.getOriginTimeStamp().longValue()), map.get(ORIGIN_TIME_STAMP.getAttribute()));
-        assertEquals(itemModel.getFilePath(), map.get(FILE_PATH.getAttribute()));
-        assertEquals(itemModel.getFileType(), map.get(FILE_TYPE.getAttribute()));
-        DELETEDynamoDBItem(itemModel);
+        DynamoDB dynamoDB = new DynamoDB(dynamoDBClient);
+        viewTable = dynamoDB.getTable(System.getProperty("table.name"));
+        ItemModel item = new ItemModel("2", 3, "123", "123");
+        SETDynamoDBItem(item);
+        item.setFilePath("124");
+        UPDATEDynamoDBItem(item);
+        Map<String, Object> map = GETDynamoDBItem(item).asMap();
+        assertEquals(item.getPackageId(), map.get(PACKAGE_ID.getAttribute()));
+        assertEquals(BigDecimal.valueOf(item.getOriginTimeStamp().longValue()), map.get(ORIGIN_TIME_STAMP.getAttribute()));
+        assertEquals(item.getFilePath(), map.get(FILE_PATH.getAttribute()));
+        assertEquals(item.getFileType(), map.get(FILE_TYPE.getAttribute()));
+        DELETEDynamoDBItem(item);
+        log.info("Check CRUD availability done");
     }
 
     private Item GETDynamoDBItem(ItemModel item) {
