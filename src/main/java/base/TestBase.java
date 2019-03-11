@@ -1,5 +1,7 @@
 package base;
 
+import Singletones.SingletonManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.FileInputStream;
@@ -26,5 +28,10 @@ public class TestBase {
         setProperty("lambda.arn", prop.getProperty("lambda.arn"));
         setProperty("role", prop.getProperty("role"));
         setProperty("lambda.version", prop.getProperty("lambda.version"));
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        SingletonManager.tearDown();
     }
 }

@@ -1,7 +1,5 @@
 package models;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -15,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 
+import static Singletones.SingletonManager.getDynamoDBClient;
 import static com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder.S;
 import static enums.Attributes.*;
 import static enums.TableStatus.ACTIVE;
@@ -22,16 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DynamoModel {
 
-    private AmazonDynamoDB dynamoDBClient;
     private Table viewTable;
     private static final Logger log = LogManager.getLogger(DynamoModel.class);
 
-    public DynamoModel() {
-        dynamoDBClient = AmazonDynamoDBClientBuilder.standard().withRegion(System.getProperty("client.region")).build();
-    }
-
     public void checkParameters() {
-        assertEquals(dynamoDBClient.listTables().getTableNames().get(0), System.getProperty("table.name"));
+        assertEquals(getDynamoDBClient().listTables().getTableNames().get(0), System.getProperty("table.name"),"Table name is correct");
         checkTableStructure();
         checkTableStatus();
         checkCRUD();
@@ -39,37 +33,37 @@ public class DynamoModel {
     }
 
     private void checkTableStructure() {
-        Iterator<AttributeDefinition> iter = dynamoDBClient
+        Iterator<AttributeDefinition> iter = getDynamoDBClient()
                 .describeTable(System.getProperty("table.name"))
                 .getTable()
                 .getAttributeDefinitions()
                 .iterator();
         for (String atr : getAttributes()) {
-            assertEquals(iter.next().getAttributeName(), atr);
+            assertEquals(iter.next().getAttributeName(), atr, "Attribute is correct: ");
         }
         log.info("Check table structure done");
     }
 
     private void checkTableStatus(){
-        assertEquals(dynamoDBClient
+        assertEquals(getDynamoDBClient()
                 .describeTable(System.getProperty("table.name"))
                 .getTable()
-                .getTableStatus(), ACTIVE.getStatus());
+                .getTableStatus(), ACTIVE.getStatus(), "Table status is correct: ");
         log.info("Check table status done");
     }
 
     private void checkCRUD() {
-        DynamoDB dynamoDB = new DynamoDB(dynamoDBClient);
+        DynamoDB dynamoDB = new DynamoDB(getDynamoDBClient());
         viewTable = dynamoDB.getTable(System.getProperty("table.name"));
         ItemModel item = new ItemModel("2", 3, "123", "123");
         SETDynamoDBItem(item);
         item.setFilePath("124");
         UPDATEDynamoDBItem(item);
         Map<String, Object> map = GETDynamoDBItem(item).asMap();
-        assertEquals(item.getPackageId(), map.get(PACKAGE_ID.getAttribute()));
-        assertEquals(BigDecimal.valueOf(item.getOriginTimeStamp().longValue()), map.get(ORIGIN_TIME_STAMP.getAttribute()));
-        assertEquals(item.getFilePath(), map.get(FILE_PATH.getAttribute()));
-        assertEquals(item.getFileType(), map.get(FILE_TYPE.getAttribute()));
+        assertEquals(item.getPackageId(), map.get(PACKAGE_ID.getAttribute()), "Package id field is correct: ");
+        assertEquals(BigDecimal.valueOf(item.getOriginTimeStamp().longValue()), map.get(ORIGIN_TIME_STAMP.getAttribute()), "Origin time stamp field is correct: ");
+        assertEquals(item.getFilePath(), map.get(FILE_PATH.getAttribute()), "File path field is correct: ");
+        assertEquals(item.getFileType(), map.get(FILE_TYPE.getAttribute()), "Pile type field is correct: ");
         DELETEDynamoDBItem(item);
         log.info("Check CRUD availability done");
     }
