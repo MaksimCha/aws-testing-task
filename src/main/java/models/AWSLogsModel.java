@@ -22,7 +22,10 @@ public class AWSLogsModel {
 
 
     public void checkLambdaLog(File file) {
-        awsLogsClient = AWSLogsClientBuilder.standard().withRegion(System.getProperty("client.region")).build();
+        awsLogsClient = AWSLogsClientBuilder
+                .standard()
+                .withRegion(System.getProperty("client.region"))
+                .build();
         FilterLogEventsRequest request = new FilterLogEventsRequest()
                 .withLogGroupName("/aws/lambda/FunctionHandler")
                 .withFilterPattern("LAMBDA " + file.getName());
