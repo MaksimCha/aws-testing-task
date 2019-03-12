@@ -35,7 +35,7 @@ public class UploadFileTestCase extends TestBase {
         s3Model.uploadFile(file);
 
         //2. Check lambda
-        awsLogsModel.sendRequstLog(file);
+        awsLogsModel.sendRequestLog(file);
 
         //3. Clean up
         s3Model.deleteLocalFile(file);
@@ -52,7 +52,7 @@ public class UploadFileTestCase extends TestBase {
         s3Model.deleteFile(file);
 
         //2. Check lambda
-        awsLogsModel.sendRequstLog(file);
+        awsLogsModel.sendRequestLog(file);
 
         //3. Clean up
         s3Model.deleteLocalFile(file);

@@ -15,7 +15,7 @@ public class TestBase {
     @BeforeAll
     public static void setProps() {
         Properties prop = new Properties();
-        try (FileInputStream stream = new FileInputStream("aws.properties")){
+        try (FileInputStream stream = new FileInputStream("aws.properties")) {
             prop.load(stream);
         } catch (IOException e) {
             e.printStackTrace();

@@ -19,14 +19,14 @@ public class AWSLogsModel {
     private static final Logger log = LogManager.getLogger(AWSLogsModel.class);
 
 
-    public void sendRequstLog(File file) {
+    public void sendRequestLog(File file) {
         FilterLogEventsRequest request = new FilterLogEventsRequest()
                 .withLogGroupName("/aws/lambda/FunctionHandler")
-                .withFilterPattern("LAMBDA " + file.getName());
+                .withFilterPattern("LAMBDA " + file.getName()).withStartTime(System.currentTimeMillis() - 1000);
         try {
             await()
                     .atMost(30, TimeUnit.SECONDS)
-                    .pollInterval(200, TimeUnit.MILLISECONDS)
+                    .pollInterval(1, TimeUnit.SECONDS)
                     .until(() -> checkArray(request));
             checkLog(file);
             log.info("Log message is correct");
