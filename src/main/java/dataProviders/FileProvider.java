@@ -22,7 +22,11 @@ public class FileProvider {
         log.info("Filename: " + fileName);
         try {
             log.info("Creating new file is done: " + file.createNewFile());
-            FileOutputStream fos = new FileOutputStream(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        try (FileOutputStream fos = new FileOutputStream(file)){
             fos.write(fileByteArray);
         } catch (IOException e) {
             e.printStackTrace();
